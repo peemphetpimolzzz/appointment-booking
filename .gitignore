@@ -1,0 +1,19 @@
+# Node / frontend
+node_modules/
+dist/
+*.local
+
+# Prisma generated client
+backend/src/generated/
+
+# Playwright
+/e2e/playwright-report/
+/e2e/test-results/
+/e2e/blob-report/
+
+# Env
+.env
+
+# OS / editor
+.DS_Store
+Thumbs.db
