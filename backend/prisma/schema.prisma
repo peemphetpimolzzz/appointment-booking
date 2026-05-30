@@ -1,0 +1,57 @@
+// Prisma schema for the appointment / booking system.
+// Times are stored in UTC (timestamptz). Business hours are minutes-from-midnight
+// in Asia/Bangkok (a fixed UTC+7 offset, no DST).
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Service {
+  id          Int       @id @default(autoincrement())
+  name        String
+  description String?
+  durationMin Int
+  priceTHB    Int
+  active      Boolean   @default(true)
+  bookings    Booking[]
+}
+
+model BusinessHours {
+  weekday  Int     @id // 0 = Sunday .. 6 = Saturday
+  openMin  Int // minutes from midnight, Asia/Bangkok
+  closeMin Int
+}
+
+model Customer {
+  id       Int       @id @default(autoincrement())
+  name     String
+  phone    String
+  email    String?
+  bookings Booking[]
+}
+
+enum BookingStatus {
+  CONFIRMED
+  CANCELLED
+}
+
+model Booking {
+  id         Int           @id @default(autoincrement())
+  code       String        @unique
+  serviceId  Int
+  customerId Int
+  startsAt   DateTime      @db.Timestamptz(6)
+  endsAt     DateTime      @db.Timestamptz(6)
+  status     BookingStatus @default(CONFIRMED)
+  createdAt  DateTime      @default(now()) @db.Timestamptz(6)
+
+  service  Service  @relation(fields: [serviceId], references: [id])
+  customer Customer @relation(fields: [customerId], references: [id])
+
+  @@index([serviceId, startsAt])
+}
