@@ -3,6 +3,12 @@
 [![CI](https://github.com/peemphetpimolzzz/appointment-booking/actions/workflows/ci.yml/badge.svg)](https://github.com/peemphetpimolzzz/appointment-booking/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
+![BookEasy demo](docs/screenshots/demo.gif)
+
+| Book a slot | Admin panel | Mobile |
+|-------------|-------------|--------|
+| ![Book](docs/screenshots/book.png) | ![Admin](docs/screenshots/admin.png) | ![Mobile](docs/screenshots/mobile.png) |
+
 A self-hosted appointment / booking system for small Thai businesses — clinics, salons,
 and independent consultants. Customers pick a service, choose an open time slot, and get a
 booking code they can use to look up or cancel their appointment. Owners manage their
