@@ -50,7 +50,8 @@ database, not just the UI.
 | Database | PostgreSQL 16 (`btree_gist` exclusion constraint)       |
 | Frontend | React, TypeScript, Vite, served by nginx                |
 | Tests    | Vitest (unit), Supertest (integration), Playwright (e2e) |
-| Infra    | Docker, Docker Compose                                   |
+| Infra    | Docker, Docker Compose (local), Terraform + ECS Fargate (cloud) |
+| Cloud    | AWS ECS Fargate, RDS PostgreSQL, ECR, Secrets Manager (OIDC CI/CD) |
 
 ## Quick start
 
@@ -120,6 +121,17 @@ fired simultaneously and exactly one succeeds (201) while the rest get 409.
 | Web      | 8080      | `WEB_PORT`                              |
 | API      | 8082      | `API_PORT`                              |
 | Postgres | 15432     | `DB_PORT` (off 5432 to avoid clashes)   |
+
+## Deploy to AWS
+
+The same container runs in the cloud on **AWS ECS Fargate** behind an Application Load
+Balancer, backed by **RDS PostgreSQL**. Infrastructure is defined as Terraform in
+[`infra/`](infra/), and the [`Deploy (AWS)`](.github/workflows/deploy.yml) workflow builds
+the image, pushes it to ECR, and rolls out a new task revision — authenticating with
+**GitHub OIDC**, so no long-lived AWS keys live in the repo. The Prisma `DATABASE_URL` is
+stored in **Secrets Manager**, and migrations run automatically on container start.
+
+See [`docs/deployment.md`](docs/deployment.md) for the full walkthrough.
 
 ## License
 
