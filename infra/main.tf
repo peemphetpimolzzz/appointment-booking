@@ -134,7 +134,7 @@ resource "aws_db_instance" "postgres" {
   engine     = "postgres"
   # Major-version only — RDS selects a currently-supported minor, avoiding a
   # pinned minor that becomes uncreatable once AWS retires it.
-  engine_version         = "16"
+  engine_version         = "17"
   instance_class         = "db.t4g.micro"
   allocated_storage      = 20
   storage_type           = "gp3"

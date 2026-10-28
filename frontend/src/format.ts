@@ -46,7 +46,7 @@ export function hhmmToMinutes(value: string): number | null {
   if (!match) return null;
   const h = Number(match[1]);
   const m = Number(match[2]);
-  if (h > 24 || m > 59) return null;
+  if (h > 24 || m > 59 || (h === 24 && m > 0)) return null;
   return h * 60 + m;
 }
 

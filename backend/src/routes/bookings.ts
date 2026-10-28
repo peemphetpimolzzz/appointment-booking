@@ -11,6 +11,7 @@ import {
   isInPast,
   meetsLeadTime,
   bangkokWeekday,
+  bangkokDateTimeToUtc,
   Interval,
 } from '../domain/booking-rules';
 
@@ -169,10 +170,8 @@ bookingsRouter.get('/', async (req, res) => {
   const where: Prisma.BookingWhereInput = {};
   if (serviceId) where.serviceId = serviceId;
   if (date) {
-    const dayStart = new Date(`${date}T00:00:00.000Z`);
-    // A Bangkok day is UTC+7; widen the window to be inclusive of the local day.
-    const lo = new Date(dayStart.getTime() - 7 * 60 * 60_000);
-    const hi = new Date(lo.getTime() + 24 * 60 * 60_000);
+    const lo = bangkokDateTimeToUtc(date, 0);
+    const hi = bangkokDateTimeToUtc(date, 24 * 60);
     where.startsAt = { gte: lo, lt: hi };
   }
   const bookings = await prisma.booking.findMany({

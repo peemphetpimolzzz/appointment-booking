@@ -5,6 +5,8 @@ import { ApiError } from '../errors';
 
 export const servicesRouter = Router();
 
+const idParam = z.coerce.number().int().positive();
+
 const serviceInput = z.object({
   name: z.string().trim().min(1).max(120),
   description: z.string().trim().max(1000).optional().nullable(),
@@ -24,7 +26,7 @@ servicesRouter.get('/', async (req, res) => {
 });
 
 servicesRouter.get('/:id', async (req, res) => {
-  const id = Number(req.params.id);
+  const id = idParam.parse(req.params.id);
   const service = await prisma.service.findUnique({ where: { id } });
   if (!service) throw new ApiError(404, 'NOT_FOUND', 'Service not found.');
   res.json(service);
@@ -45,7 +47,7 @@ servicesRouter.post('/', async (req, res) => {
 });
 
 servicesRouter.put('/:id', async (req, res) => {
-  const id = Number(req.params.id);
+  const id = idParam.parse(req.params.id);
   const data = serviceInput.partial().parse(req.body);
   const existing = await prisma.service.findUnique({ where: { id } });
   if (!existing) throw new ApiError(404, 'NOT_FOUND', 'Service not found.');
@@ -60,7 +62,7 @@ servicesRouter.put('/:id', async (req, res) => {
 });
 
 servicesRouter.delete('/:id', async (req, res) => {
-  const id = Number(req.params.id);
+  const id = idParam.parse(req.params.id);
   const existing = await prisma.service.findUnique({ where: { id } });
   if (!existing) throw new ApiError(404, 'NOT_FOUND', 'Service not found.');
   // Soft-delete: keep history intact, just deactivate so it stops appearing for booking.

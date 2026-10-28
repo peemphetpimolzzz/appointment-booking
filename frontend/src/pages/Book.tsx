@@ -59,9 +59,13 @@ export function Book() {
       setError((err as Error).message);
       // The slot may have just been taken; refresh availability.
       if (serviceId != null) {
-        const data = await api.get<Availability>(`/availability?serviceId=${serviceId}&date=${date}`);
-        setSlots(data.slots);
-        setSelectedSlot(null);
+        api
+          .get<Availability>(`/availability?serviceId=${serviceId}&date=${date}`)
+          .then((data) => {
+            setSlots(data.slots);
+            setSelectedSlot(null);
+          })
+          .catch(() => undefined);
       }
     } finally {
       setSubmitting(false);

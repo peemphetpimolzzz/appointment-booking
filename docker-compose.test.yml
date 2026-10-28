@@ -7,7 +7,7 @@ services:
   # Dedicated Postgres for integration tests so they never touch the dev database.
   # No host port — it is only reachable inside the compose network.
   test-db:
-    image: postgres:16-alpine
+    image: postgres:17-alpine
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
@@ -36,6 +36,9 @@ services:
       context: ./e2e
     environment:
       BASE_URL: http://web:80
+    volumes:
+      - ./e2e/playwright-report:/e2e/playwright-report
+      - ./e2e/test-results:/e2e/test-results
     depends_on:
       web:
         condition: service_healthy

@@ -47,7 +47,7 @@ database, not just the UI.
 | Layer    | Technology                                              |
 | -------- | ------------------------------------------------------- |
 | Backend  | Node.js, TypeScript, Express, Prisma ORM                |
-| Database | PostgreSQL 16 (`btree_gist` exclusion constraint)       |
+| Database | PostgreSQL 17 (`btree_gist` exclusion constraint)       |
 | Frontend | React, TypeScript, Vite, served by nginx                |
 | Tests    | Vitest (unit), Supertest (integration), Playwright (e2e) |
 | Infra    | Docker, Docker Compose (local), Terraform + ECS Fargate (cloud) |
@@ -69,10 +69,10 @@ sample services and business hours, then starts serving. The seed is idempotent.
 ### Try the double-booking guard
 
 ```bash
-# Create a booking for a slot...
+# Create a booking for a future Tuesday slot (03:00 UTC = 10:00 Bangkok)...
 curl -s -X POST http://localhost:8082/api/bookings \
   -H 'Content-Type: application/json' \
-  -d '{"serviceId":1,"startsAt":"2026-06-09T03:00:00Z","customer":{"name":"A","phone":"0810000000"}}'
+  -d '{"serviceId":1,"startsAt":"2027-06-08T03:00:00Z","customer":{"name":"A","phone":"0810000000"}}'
 
 # ...then try the same slot again -> HTTP 409, { "error": { "code": "SLOT_TAKEN", ... } }
 ```
@@ -85,6 +85,7 @@ All endpoints are under `/api`. Errors use a consistent envelope: `{ "error": { 
 | ------ | --------------------------------------------- | ---------------------------------------- |
 | GET    | `/api/health`                                 | Liveness probe                           |
 | GET    | `/api/services?active=true`                   | List services                            |
+| GET    | `/api/services/:id`                           | Get a single service                     |
 | POST   | `/api/services`                               | Create a service                         |
 | PUT    | `/api/services/:id`                           | Update a service                         |
 | DELETE | `/api/services/:id`                           | Deactivate a service                     |
@@ -101,7 +102,7 @@ All endpoints are under `/api`. Errors use a consistent envelope: `{ "error": { 
 ```bash
 # Unit tests — pure booking rules (overlap, business hours, slot generation)
 docker run --rm -v "$PWD/backend:/app" -w /app node:22-bookworm-slim \
-  sh -c "npm install && npx prisma generate && npm run test:unit"
+  sh -c "npm ci && npx prisma generate && npm run test:unit"
 
 # Integration tests — Supertest against a dedicated test Postgres
 docker compose -f docker-compose.yml -f docker-compose.test.yml run --build --rm integration-tests
@@ -135,4 +136,4 @@ See [`docs/deployment.md`](docs/deployment.md) for the full walkthrough.
 
 ## License
 
-MIT — see [LICENSE](LICENSE).
+[MIT](LICENSE) — Part of [Peem Phetpimol's portfolio](https://peemphetpimolzzz.github.io) (Fullstack & Cloud Engineer · Test Automation).
