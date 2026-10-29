@@ -47,7 +47,7 @@ database, not just the UI.
 | Layer    | Technology                                              |
 | -------- | ------------------------------------------------------- |
 | Backend  | Node.js, TypeScript, Express, Prisma ORM                |
-| Database | PostgreSQL 17 (`btree_gist` exclusion constraint)       |
+| Database | PostgreSQL (`btree_gist` exclusion constraint)          |
 | Frontend | React, TypeScript, Vite, served by nginx                |
 | Tests    | Vitest (unit), Supertest (integration), Playwright (e2e) |
 | Infra    | Docker, Docker Compose (local), Terraform + ECS Fargate (cloud) |
