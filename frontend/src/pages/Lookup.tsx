@@ -41,7 +41,13 @@ export function Lookup() {
   return (
     <div>
       <div className="page-header">
-        <h1>Find my booking</h1>
+        <div>
+          <h1>Find my booking</h1>
+          <div className="page-subtitle">
+            Enter your 8-character reference code to view appointment details or cancel your slot
+          </div>
+        </div>
+        <span className="badge badge-neutral">Self-Service Portal</span>
       </div>
 
       {error && (
@@ -57,7 +63,7 @@ export function Lookup() {
           value={code}
           onChange={(e) => setCode(e.target.value)}
           aria-label="Booking code"
-          style={{ maxWidth: 260 }}
+          style={{ maxWidth: 280 }}
         />
         <button className="button primary" type="submit" disabled={busy || !code.trim()}>
           Look up

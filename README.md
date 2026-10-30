@@ -1,46 +1,43 @@
-# BookEasy — Appointment Booking for Thai SMEs
+# BookEasy (SlotWise) — Commercial Appointment Booking & Schedule Console
 
 [![CI](https://github.com/peemphetpimolzzz/appointment-booking/actions/workflows/ci.yml/badge.svg)](https://github.com/peemphetpimolzzz/appointment-booking/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-![BookEasy demo](docs/screenshots/demo.gif)
+![SlotWise Booking & Schedule Console](docs/screenshots/book.png)
 
-| Book a slot | Admin panel | Mobile |
-|-------------|-------------|--------|
-| ![Book](docs/screenshots/book.png) | ![Admin](docs/screenshots/admin.png) | ![Mobile](docs/screenshots/mobile.png) |
+A commercial-grade, self-hosted appointment and schedule console tailored for clinics, salons,
+wellness studios, and independent consultants. Designed with a Cal.com + Shadcn Minimal + Modern
+aesthetic: customers pick a service, select an open time slot, and receive an instant reference
+code they can use to look up or cancel their booking. Business owners manage service offerings,
+weekly business hours, and the live daily schedule from a unified console.
 
-A self-hosted appointment / booking system for small Thai businesses — clinics, salons,
-and independent consultants. Customers pick a service, choose an open time slot, and get a
-booking code they can use to look up or cancel their appointment. Owners manage their
-services, weekly business hours, and the day's schedule from a simple admin panel.
-
-The headline engineering feature is **double-booking prevention at two independent layers**,
+The headline engineering guarantee is **double-booking prevention at two independent layers**,
 so the same time slot can never be sold twice — even under a burst of simultaneous requests.
 
-## Why I built it
+## Why Businesses & Teams Choose BookEasy
 
-Most small shops here juggle bookings over LINE chats and paper diaries, which makes
-double-bookings routine. I wanted a single-origin, container-deployable app that makes
-the "no two customers in the same chair at the same time" guarantee a property of the
-database, not just the UI.
+Most clinics and studios juggle bookings over chat apps and paper diaries, making accidental
+double-bookings routine. BookEasy delivers a single-origin, container-deployable application
+where the "no two customers in the same chair at the same time" rule is enforced directly by
+PostgreSQL constraints, not just the UI.
 
-## Features
+## Key Features
 
-- **Two-layer double-booking prevention** (the core of the project):
-  1. **Application layer** — every booking is created inside a Postgres
+- **Two-layer double-booking prevention**:
+  1. **Application layer** — every booking is created inside a PostgreSQL
      `Serializable` transaction that re-checks for overlaps before inserting.
   2. **Database layer** — a PostgreSQL `GiST` `EXCLUDE` constraint (`btree_gist`)
      rejects any two `CONFIRMED` bookings whose time ranges overlap for the same
      service, atomically and regardless of how many requests race. Violations surface
      as a clean **409 Conflict**.
-- **Availability engine** — open slots are computed from weekly business hours minus
-  already-booked intervals minus past times. Times are stored in UTC; business hours are
-  minutes-from-midnight in Asia/Bangkok (a fixed UTC+7 offset, no DST).
-- **Customer flow** — pick service → date → open slot → confirm → receive a booking code.
-- **Self-service lookup & cancel** — customers find and cancel their booking by code.
-- **Admin panel** — manage services, edit the weekly schedule, and view/cancel the day's
-  bookings.
-- **Single origin, no CORS** — nginx reverse-proxies `/api` to the API container.
+- **Smart Availability Engine** — open slots are computed dynamically from weekly business hours
+  minus already-booked intervals minus past times in `Asia/Bangkok` (`UTC+7`).
+- **Cal.com-Inspired Customer Storefront** — split-pane service selector, interactive slot grid,
+  live booking summary, and instant confirmation pass.
+- **Self-Service Lookup & 1-Click Cancel** — customers find and cancel their booking by reference code.
+- **Admin Schedule Console** — manage services, configure weekly business hours, and monitor or cancel
+  the day's bookings.
+- **Single Origin, Zero CORS Hassle** — nginx serves the React SPA and reverse-proxies `/api` to the API container.
 
 ## Tech stack
 
@@ -48,7 +45,7 @@ database, not just the UI.
 | -------- | ------------------------------------------------------- |
 | Backend  | Node.js, TypeScript, Express, Prisma ORM                |
 | Database | PostgreSQL (`btree_gist` exclusion constraint)          |
-| Frontend | React, TypeScript, Vite, served by nginx                |
+| Frontend | React, TypeScript, Vite (Cal.com / Shadcn Design System)|
 | Tests    | Vitest (unit), Supertest (integration), Playwright (e2e) |
 | Infra    | Docker, Docker Compose (local), Terraform + ECS Fargate (cloud) |
 | Cloud    | AWS ECS Fargate, RDS PostgreSQL, ECR, Secrets Manager (OIDC CI/CD) |
@@ -63,8 +60,8 @@ docker compose up --build
 - Web UI: <http://localhost:8080>
 - API health: <http://localhost:8082/api/health>
 
-The API container applies migrations (including the exclusion constraint), seeds a few
-sample services and business hours, then starts serving. The seed is idempotent.
+The API container applies migrations (including the exclusion constraint), seeds sample services
+and business hours, then starts serving. The seed is idempotent.
 
 ### Try the double-booking guard
 

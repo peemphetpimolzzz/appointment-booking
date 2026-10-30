@@ -9,10 +9,17 @@ const links = [
 export function Layout() {
   return (
     <div className="app-shell">
-      <aside className="sidebar">
-        <div className="brand">
-          Book<span>Easy</span>
+      <header className="topbar">
+        <div className="brand-group">
+          <div className="brand-logo">BE</div>
+          <div>
+            <div className="brand">
+              Book<span>Easy</span> · SlotWise
+            </div>
+            <div className="brand-sub">Omnichannel Appointment &amp; Schedule Console</div>
+          </div>
         </div>
+
         <nav>
           {links.map((link) => (
             <NavLink
@@ -24,7 +31,13 @@ export function Layout() {
             </NavLink>
           ))}
         </nav>
-      </aside>
+
+        <div className="topbar-meta">
+          <span className="badge badge-ok">● PostgreSQL GiST Guard</span>
+          <span className="badge badge-neutral">Asia/Bangkok (UTC+7)</span>
+        </div>
+      </header>
+
       <main className="content">
         <Outlet />
       </main>
